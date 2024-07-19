@@ -27,8 +27,19 @@ public class Lrc2Vtt {
                 buffer.append("# This WEBVTT was converted from a LRC format\n\n");
 
                 for (int i = 0; i < timings.size() - 1; i++) {
+                        String currentTiming = timings.get(i);
+                        String nextTiming = timings.get(i + 1);
+
+                        if (currentTiming.split("\\.")[1].length() == 2) {
+                                currentTiming = currentTiming + "0";
+                        }
+
+                        if (nextTiming.split("\\.")[1].length() == 2) {
+                                nextTiming = nextTiming + "0";
+                        }
+
                         // this assumes a song is never an hour long which most likely it won't be anyway
-                        buffer.append("00:%s0 --> 00:%s0%n".formatted(timings.get(i), timings.get(i + 1)));
+                        buffer.append("00:%s --> 00:%s%n".formatted(currentTiming, nextTiming));
                         buffer.append("%s%n%n".formatted(cues.get(i)));
                 }
 
