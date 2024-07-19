@@ -13,7 +13,11 @@ public class Lrc2Vtt {
 
                 for (String line : split) {
                         var time = line.split("[\\[\\]]")[1];
-                        var cue = line.replaceFirst("]", "%DELIMITER%").split("%DELIMITER%")[1].trim();
+                        var cueSplit = line.replaceFirst("]", "%DELIMITER%").split("%DELIMITER%");
+
+                        if (cueSplit.length < 2) continue;
+
+                        var cue = cueSplit[1].trim();
 
                         timings.add(time);
                         cues.add(cue);

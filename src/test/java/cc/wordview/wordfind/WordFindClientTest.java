@@ -34,7 +34,7 @@ public class WordFindClientTest {
                         assertFalse(result.isBlank());
                 });
                 assertDoesNotThrow(() -> {
-                        String result = WordFindClient.search("majiko magic", LyricsProvider.NETEASE);
+                        String result = WordFindClient.search("wonderland", LyricsProvider.NETEASE);
 
                         assertNotNull(result);
                         assertFalse(result.isEmpty());

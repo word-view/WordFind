@@ -13,6 +13,14 @@ public class Lrc2VttTest {
         }
 
         @Test
+        void convertPossibleIndexOutOfBounds() {
+                assertDoesNotThrow(() -> {
+                        StringBuffer converted = Lrc2Vtt.convert(MockValues.indexOutOfBoundsLrc);
+                        assertFalse(converted.isEmpty());
+                });
+        }
+
+        @Test
         void convertSuiseiNoParade() {
                 assertDoesNotThrow(() -> {
                         StringBuffer converted = Lrc2Vtt.convert(MockValues.suiseiNoParadeLrc);

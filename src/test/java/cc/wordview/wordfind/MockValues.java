@@ -1,6 +1,16 @@
 package cc.wordview.wordfind;
 
 public class MockValues {
+        public static String indexOutOfBoundsLrc =
+                "[01:07.250]\n" +
+                "[01:39.829]\n" +
+                "[02:11.358]\n" +
+                "[02:29.180]\n" +
+                "[02:59.567]\n" +
+                "[03:31.579]\n" +
+                "[04:03.580]\n" +
+                "\n";
+
         public static String helloWorldLrc =
                 "[00:04.32] Hello, world\n" +
                 "[00:08.25] Programmed to work and not to feel\n" +
