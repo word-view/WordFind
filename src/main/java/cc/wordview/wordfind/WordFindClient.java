@@ -24,13 +24,7 @@ public class WordFindClient {
         public static String search(String query, LyricsProvider provider) throws IOException, LyricsNotFoundException {
                 Process process;
 
-                ProcessBuilder builder = new ProcessBuilder(
-                        executablePath,
-                        "--synced-only",
-                        "-p=%s".formatted(provider.getName()),
-                        "--output=/dev/null", // ignore output file
-                        "\"%s\"".formatted(query)
-                );
+                ProcessBuilder builder = getProcessBuilder(query, provider);
 
                 builder.directory(new File(System.getProperty("java.io.tmpdir")));
 
@@ -46,6 +40,28 @@ public class WordFindClient {
                         throw new LyricsNotFoundException("Unable to find any lyrics for this search query in %s".formatted(provider.getName()));
 
                 return stdout;
+        }
+
+        private static ProcessBuilder getProcessBuilder(String query, LyricsProvider provider) {
+                ProcessBuilder builder;
+
+                if (provider == LyricsProvider.ALL) {
+                        builder = new ProcessBuilder(
+                                executablePath,
+                                "--synced-only",
+                                "--output=/dev/null", // ignore output file
+                                "\"%s\"".formatted(query)
+                        );
+                } else {
+                        builder = new ProcessBuilder(
+                                executablePath,
+                                "--synced-only",
+                                "-p=%s".formatted(provider.getName()),
+                                "--output=/dev/null",
+                                "\"%s\"".formatted(query)
+                        );
+                }
+                return builder;
         }
 
         private static String inputStreamToString(InputStream stream) throws IOException {

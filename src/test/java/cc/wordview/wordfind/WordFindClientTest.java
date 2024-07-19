@@ -45,6 +45,18 @@ public class WordFindClientTest {
 
         @Test
         @Order(4)
+        void searchEverywhere() {
+                assertDoesNotThrow(() -> {
+                        String result = WordFindClient.search("majiko magic", LyricsProvider.ALL);
+
+                        assertNotNull(result);
+                        assertFalse(result.isEmpty());
+                        assertFalse(result.isBlank());
+                });
+        }
+
+        @Test
+        @Order(5)
         void searchInvalidExecutable() {
                 assertThrows(IOException.class, () -> {
                         WordFindClient.setExecutablePath("syncliri");

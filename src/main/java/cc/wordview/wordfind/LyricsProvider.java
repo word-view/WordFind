@@ -8,7 +8,8 @@ public enum LyricsProvider {
         NETEASE("netease"),
         LRCLIB("lrclib"),
         MEGALOBIZ("megalobiz"),
-        GENIUS("genius");
+        GENIUS("genius"),
+        ALL("all");
 
         private final String name;
 
