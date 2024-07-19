@@ -45,22 +45,14 @@ public class WordFindClient {
         private static ProcessBuilder getProcessBuilder(String query, LyricsProvider provider) {
                 ProcessBuilder builder;
 
-                if (provider == LyricsProvider.ALL) {
-                        builder = new ProcessBuilder(
-                                executablePath,
-                                "--synced-only",
-                                "--output=/dev/null", // ignore output file
-                                "\"%s\"".formatted(query)
-                        );
-                } else {
-                        builder = new ProcessBuilder(
-                                executablePath,
-                                "--synced-only",
-                                "-p=%s".formatted(provider.getName()),
-                                "--output=/dev/null",
-                                "\"%s\"".formatted(query)
-                        );
-                }
+                builder = new ProcessBuilder(
+                        executablePath,
+                        "--synced-only",
+                        "-p=%s".formatted(provider.getName()),
+                        "--output=/dev/null",
+                        ("%s").formatted(query)
+                );
+
                 return builder;
         }
 

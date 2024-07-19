@@ -25,9 +25,16 @@ public class WordFindClientTest {
 
         @Test
         @Order(2)
-        void searchSpecifyingPlatform() {
+        void searchNetEase() {
                 assertDoesNotThrow(() -> {
                         String result = WordFindClient.search("majiko 彗星のパレード", LyricsProvider.NETEASE);
+
+                        assertNotNull(result);
+                        assertFalse(result.isEmpty());
+                        assertFalse(result.isBlank());
+                });
+                assertDoesNotThrow(() -> {
+                        String result = WordFindClient.search("majiko magic", LyricsProvider.NETEASE);
 
                         assertNotNull(result);
                         assertFalse(result.isEmpty());
@@ -37,21 +44,21 @@ public class WordFindClientTest {
 
         @Test
         @Order(3)
-        void searchLyricsNotFound() {
-                assertThrows(LyricsNotFoundException.class, () -> {
-                        WordFindClient.search("majiko_suisei_no_parade");
+        void searchGauches() {
+                assertDoesNotThrow(() -> {
+                        String result = WordFindClient.search("do fundo da grota");
+
+                        assertNotNull(result);
+                        assertFalse(result.isEmpty());
+                        assertFalse(result.isBlank());
                 });
         }
 
         @Test
         @Order(4)
-        void searchEverywhere() {
-                assertDoesNotThrow(() -> {
-                        String result = WordFindClient.search("majiko magic", LyricsProvider.ALL);
-
-                        assertNotNull(result);
-                        assertFalse(result.isEmpty());
-                        assertFalse(result.isBlank());
+        void searchLyricsNotFound() {
+                assertThrows(LyricsNotFoundException.class, () -> {
+                        WordFindClient.search("majiko_suisei_no_parade");
                 });
         }
 
