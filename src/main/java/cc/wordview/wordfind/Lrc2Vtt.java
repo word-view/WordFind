@@ -19,8 +19,8 @@ public class Lrc2Vtt {
                         cues.add(cue);
                 }
 
-                buffer.append("# This WEBVTT was converted from a LRC format\n\n");
                 buffer.append("WEBVTT\n\n");
+                buffer.append("# This WEBVTT was converted from a LRC format\n\n");
 
                 for (int i = 0; i < timings.size() - 1; i++) {
                         // this assumes a song is never an hour long which most likely it won't be anyway
