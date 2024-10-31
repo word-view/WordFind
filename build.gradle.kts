@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "2.0.20"
+    `maven-publish`
 }
 
 group = "cc.wordview.wordfind"
@@ -18,4 +19,16 @@ tasks.test {
 }
 kotlin {
     jvmToolchain(21)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = group.toString()
+            artifactId = rootProject.name
+            version = version
+
+            from(components["java"])
+        }
+    }
 }
