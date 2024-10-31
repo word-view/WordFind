@@ -2,16 +2,19 @@ package cc.wordview.wordfind
 
 import java.io.IOException
 import java.io.InputStream
+import kotlin.jvm.Throws
 
 class WordFind {
     var executablePath = "syncedlyrics"
 
     var defaultProvider = LyricsProviders.MUSIXMATCH
 
+    @Throws(LyricsNotFoundException::class, IOException::class)
     fun search(query: String): String {
         return search(query, defaultProvider)
     }
 
+    @Throws(LyricsNotFoundException::class, IOException::class)
     fun search(query: String, provider: LyricsProviders): String {
         val builder = getProcessBuilder(query, provider)
         val process = builder.start()
