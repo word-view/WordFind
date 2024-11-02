@@ -1,5 +1,7 @@
 package cc.wordview.wordfind
 
+import cc.wordview.wordfind.mock.ConvertedVTT
+import cc.wordview.wordfind.mock.LRC
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import kotlin.test.assertEquals

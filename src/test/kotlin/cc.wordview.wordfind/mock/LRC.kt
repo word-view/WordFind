@@ -1,4 +1,4 @@
-package cc.wordview.wordfind
+package cc.wordview.wordfind.mock
 
 data class LRC(
     val shuuten: String = "[00:00.000] 作词 : じっぷす\n" +

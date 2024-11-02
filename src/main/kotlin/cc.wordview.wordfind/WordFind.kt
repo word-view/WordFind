@@ -1,45 +1,83 @@
 package cc.wordview.wordfind
 
-import java.io.IOException
-import java.io.InputStream
-import kotlin.jvm.Throws
+import cc.wordview.wordfind.exception.InvalidJsonException
+import cc.wordview.wordfind.exception.LyricsNotFoundException
+import cc.wordview.wordfind.providers.Platform
+import cc.wordview.wordfind.providers.Provider
+import org.slf4j.LoggerFactory
 
+/**
+ * Provides access to lyrics platforms
+ */
 class WordFind {
-    var executablePath = "syncedlyrics"
+    val logger = LoggerFactory.getLogger(this::class.java)
 
-    var defaultProvider = LyricsProviders.MUSIXMATCH
+    val platforms = arrayListOf<Platform>(
+        Platform.MUSIXMATCH,
+        Platform.LRCLIB,
+        Platform.NETEASE,
+    )
 
-    @Throws(LyricsNotFoundException::class, IOException::class)
-    fun search(query: String): String {
-        return search(query, defaultProvider)
+    /**
+     * Tries to find the lyrics based on the given information.
+     * It loops through all the predefined platforms until in finds something.
+     *
+     * @param trackName The name of the track
+     * @param artistName The name of the artist
+     * @param albumName The name of the album
+     * @param duration The duration of the track
+     * @param convertToVtt If it should be automatically returned in the VTT format
+     * @return An LRC or VTT lyrics
+     */
+    @Throws(LyricsNotFoundException::class)
+    fun find(
+        trackName: String,
+        artistName: String,
+        convertToVtt: Boolean = false,
+        albumName: String? = null,
+        duration: Int? = null
+    ): String {
+        // Different exceptions are thrown purely for logging and debugging
+        // because the action is the same always, to try again with the next platform.
+        for (platform in platforms) {
+            try {
+                return find(trackName, artistName, platform.provider, convertToVtt, albumName, duration)
+            } catch (e: LyricsNotFoundException) {
+                logger.info("The platform ${platform.platformName} was unable to find any lyrics: ${e.message}")
+                continue
+            } catch (e: InvalidJsonException) {
+                logger.error("The platform ${platform.platformName} returned a JSON that could not be parsed: ${e.message}")
+                continue
+            } catch (e: Exception) {
+                logger.error("The platform ${platform.platformName} responded in a unexpected way: ${e.message}", e)
+                continue
+            }
+        }
+
+        throw LyricsNotFoundException("Could not find any lyrics in any platform: ${platforms.size} tried")
     }
 
-    @Throws(LyricsNotFoundException::class, IOException::class)
-    fun search(query: String, provider: LyricsProviders): String {
-        val builder = getProcessBuilder(query, provider)
-        val process = builder.start()
-
-        val stdout = inputStreamToString(process.inputStream)
-        val stderr = inputStreamToString(process.errorStream)
-
-        if (stderr.isNotEmpty()) throw IOException("Failed to run syncedlyrics: $stderr")
-
-        if (stdout.isEmpty()) throw LyricsNotFoundException("Could not find anything for query=$query")
-
-        return stdout
-    }
-
-    private fun getProcessBuilder(query: String, provider: LyricsProviders): ProcessBuilder {
-        return ProcessBuilder(
-            executablePath,
-            "--synced-only",
-            "-p=${provider.platformName}",
-            "--output=/dev/null",
-            query
-        )
-    }
-
-    private fun inputStreamToString(stream: InputStream): String {
-        return stream.bufferedReader().use { it.readText() }
+    /**
+     * Tries to find the lyrics based on the given information using the specified provider.
+     *
+     * @param trackName The name of the track
+     * @param artistName The name of the artist
+     * @param albumName The name of the album
+     * @param duration The duration of the track
+     * @param provider The lyrics provider
+     * @param convertToVtt If it should be automatically returned in the VTT format
+     * @return An LRC or VTT lyrics
+     */
+    @Throws(LyricsNotFoundException::class, InvalidJsonException::class)
+    fun find(
+        trackName: String,
+        artistName: String,
+        provider: Provider,
+        convertToVtt: Boolean = false,
+        albumName: String? = null,
+        duration: Int? = null
+    ): String {
+        val lyrics = provider.find(trackName, artistName, albumName, duration)
+        return if (convertToVtt) LrcToVtt().convert(lyrics) else lyrics
     }
 }

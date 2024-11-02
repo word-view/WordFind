@@ -1,50 +1,57 @@
 package cc.wordview.wordfind
 
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertNotNull
+import cc.wordview.wordfind.exception.InvalidJsonException
+import cc.wordview.wordfind.exception.LyricsNotFoundException
+import cc.wordview.wordfind.mock.MockProvider
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
-import java.io.IOException
+import kotlin.test.Ignore
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+
 
 class WordFindTest {
     @Test
-    fun search() {
-        testSearch("majiko suisei no parade")
-        testSearch("do fundo da grota")
-        testSearch("majiko 彗星のパレード", LyricsProviders.NETEASE)
-        testSearch("wonderland", LyricsProviders.NETEASE)
+    @Ignore("This test makes a request to the real API, only run it if something inside the find method changed that was not related to parseResponse")
+    fun realFind() {
+        assertDoesNotThrow {
+            // This search will result from NetEase, the last platform in the order specified
+            // at the WordFind class, that ensures that when a platform fails it goes to the next
+            val lyrics  = WordFind().find("彗星のパレード", "まじ娘", convertToVtt = true)
+
+            assertTrue(lyrics.isNotEmpty())
+            assertTrue(lyrics.isNotBlank())
+        }
     }
 
     @Test
-    fun searchLyricsNotFound() {
+    fun find() {
+        assertDoesNotThrow { 
+            val lyrics  = WordFind().find("", "", MockProvider())
+            assertEquals("lyrics", lyrics)
+        }
+    }
+
+    @Test
+    fun findLyricsNotFound() {
         assertThrows<LyricsNotFoundException> {
-            WordFind().search("majiko_suisei_no_parade")
+            WordFind().find("throw notFound", "", MockProvider())
         }
     }
 
     @Test
-    fun invalidExecutable() {
-        assertThrows<IOException> {
-            val client = WordFind()
-
-            client.executablePath = "aaaaaaaaaaaaaa"
-            client.search("a")
+    fun findInvalidJson() {
+        assertThrows<InvalidJsonException> {
+            WordFind().find("throw invalidJson", "", MockProvider())
         }
     }
 
-    private fun testSearch(query: String) {
-        val result = WordFind().search(query)
-
-        assertNotNull(result)
-        assertFalse(result.isEmpty())
-        assertFalse(result.isBlank())
-    }
-
-    private fun testSearch(query: String, provider: LyricsProviders) {
-        val result = WordFind().search(query, provider)
-
-        assertNotNull(result)
-        assertFalse(result.isEmpty())
-        assertFalse(result.isBlank())
+    @Test
+    fun findGenericException() {
+        assertThrows<Exception> {
+            WordFind().find("throw exception", "", MockProvider())
+        }
     }
 }

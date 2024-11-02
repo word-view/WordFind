@@ -1,4 +1,4 @@
-package cc.wordview.wordfind
+package cc.wordview.wordfind.mock
 
 data class ConvertedVTT(
     val shuuten: String = "WEBVTT\n" +
