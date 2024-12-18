@@ -33,39 +33,59 @@ class NetEaseTest {
     @Test
     fun searchId() {
         assertDoesNotThrow {
-            val id = NetEase().parseSearchResponse(mockMagicResponse, 200)
+            val id = NetEase().parseSearchResponse("magic", mockMagicResponse, 200)
             assertEquals(41636945, id)
+        }
+    }
+
+    @Test
+    fun searchGoodSimilarityScore() {
+        assertDoesNotThrow {
+            NetEase().parseSearchResponse("magic", mockMagicResponse, 200)
+            NetEase().parseSearchResponse("magi", mockMagicResponse, 200)
+            NetEase().parseSearchResponse("mag", mockMagicResponse, 200)
+        }
+    }
+
+    @Test
+    fun searchBadSimilarity() {
+        assertThrows<Exception> {
+            NetEase().parseSearchResponse("Hello", mockMagicResponse, 200)
+            NetEase().parseSearchResponse("World", mockMagicResponse, 200)
+            NetEase().parseSearchResponse("Magnificent", mockMagicResponse, 200)
         }
     }
 
     @Test
     fun searchInvalidJson() {
         assertThrows<InvalidJsonException> {
-            NetEase().parseSearchResponse(emptyResult, 200)
-            NetEase().parseSearchResponse(songsNoId, 200)
+            NetEase().parseSearchResponse("magic", emptyResult, 200)
+            NetEase().parseSearchResponse("magic", songsNoId, 200)
         }
     }
 
     @Test
     fun searchSongsEmpty() {
         assertThrows<LyricsNotFoundException> {
-            NetEase().parseSearchResponse(songsEmpty, 200)
+            NetEase().parseSearchResponse("magic", songsEmpty, 200)
         }
     }
 
     @Test
     fun search404() {
         assertThrows<LyricsNotFoundException> {
-            NetEase().parseSearchResponse(songsEmpty, 404)
+            NetEase().parseSearchResponse("magic", songsEmpty, 404)
         }
     }
 
     @Test
     fun searchUnhandled() {
         assertThrows<Exception> {
-            NetEase().parseSearchResponse(songsEmpty, 418)
+            NetEase().parseSearchResponse("magic", songsEmpty, 418)
         }
     }
+
+
 
     @Test
     fun getLyrics() {

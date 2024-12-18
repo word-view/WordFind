@@ -2,6 +2,7 @@ package cc.wordview.wordfind.providers
 
 import cc.wordview.wordfind.exception.LyricsNotFoundException
 import cc.wordview.wordfind.extensions.getOrThrow
+import cc.wordview.wordfind.extensions.similarity
 import com.google.gson.JsonParser
 import java.net.URLEncoder
 
@@ -22,7 +23,7 @@ class NetEase : Provider() {
         val request = request(netEaseCookies).url(url).build()
         val response = client.newCall(request).execute()
 
-        val resultId = parseSearchResponse(response.body?.string()!!, response.code)
+        val resultId = parseSearchResponse(trackName, response.body?.string()!!, response.code)
 
         val urlLyrics = "$rootUrl/song/lyric?id=$resultId&lv=1"
 
@@ -48,7 +49,7 @@ class NetEase : Provider() {
         }
     }
 
-    fun parseSearchResponse(body: String, statusCode: Int): Int {
+    fun parseSearchResponse(trackName: String, body: String, statusCode: Int): Int {
         when (statusCode) {
             200 -> {
                 val jsonObject = JsonParser.parseString(body).asJsonObject!!
@@ -61,6 +62,12 @@ class NetEase : Provider() {
                     throw LyricsNotFoundException("Returned songs list is empty")
 
                 val id = songs.get(0).asJsonObject.getOrThrow("id")
+                val name = songs.get(0).asJsonObject.getOrThrow("name")
+
+                val resultSimilarity = trackName.similarity(name.asString.lowercase())
+
+                if (resultSimilarity < 0.6)
+                    throw LyricsNotFoundException("Found lyrics but similarity score was not enough")
 
                 return id.asInt
             }
