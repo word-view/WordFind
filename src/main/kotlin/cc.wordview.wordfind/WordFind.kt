@@ -13,7 +13,7 @@ class WordFind {
     val logger = LoggerFactory.getLogger(this::class.java)
     val cache = mutableMapOf<String, String>()
 
-    val platforms = arrayListOf<Platform>(
+    val platforms = arrayListOf(
         Platform.MUSIXMATCH,
         Platform.LRCLIB,
         Platform.NETEASE,
@@ -38,16 +38,12 @@ class WordFind {
         albumName: String? = null,
         duration: Int? = null
     ): String {
-        // Different exceptions are thrown purely for logging and debugging
-        // because the action is the same always, to try again with the next platform.
         for (platform in platforms) {
             try {
                 return find(trackName, artistName, platform.provider, convertToVtt, albumName, duration)
-            } catch (e: LyricsNotFoundException) {
-                logger.info("The platform ${platform.platformName} was unable to find any lyrics: ${e.message}")
+            } catch (_: LyricsNotFoundException) {
                 continue
-            } catch (e: InvalidJsonException) {
-                logger.error("The platform ${platform.platformName} returned a JSON that could not be parsed: ${e.message}")
+            } catch (_: InvalidJsonException) {
                 continue
             } catch (e: Exception) {
                 logger.error("The platform ${platform.platformName} responded in a unexpected way: ${e.message}", e)
