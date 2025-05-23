@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory
  */
 class WordFind {
     val logger = LoggerFactory.getLogger(this::class.java)
+    val cache = mutableMapOf<String, String>()
 
     val platforms = arrayListOf<Platform>(
         Platform.MUSIXMATCH,
@@ -77,7 +78,11 @@ class WordFind {
         albumName: String? = null,
         duration: Int? = null
     ): String {
-        val lyrics = provider.find(trackName, artistName, albumName, duration)
+        val key = trackName + artistName
+
+        val lyrics = cache[key] ?: provider.find(trackName, artistName, albumName, duration)
+        if (!cache.contains(key)) cache.put(key, lyrics)
+
         return if (convertToVtt) LrcToVtt().convert(lyrics) else lyrics
     }
 }
