@@ -3,8 +3,6 @@ package cc.wordview.wordfind.mock
 data class ConvertedVTT(
     val shuuten: String = "WEBVTT\n" +
             "\n" +
-            "# This WEBVTT was converted from LRC and might contain errors\n" +
-            "\n" +
             "00:00:00.000 --> 00:00:00.510\n" +
             "作词 : じっぷす\n" +
             "\n" +
@@ -155,8 +153,6 @@ data class ConvertedVTT(
 
     val helloWorld: String = "WEBVTT\n" +
             "\n" +
-            "# This WEBVTT was converted from LRC and might contain errors\n" +
-            "\n" +
             "00:00:04.320 --> 00:00:08.250\n" +
             "Hello, world\n" +
             "\n" +
@@ -213,8 +209,6 @@ data class ConvertedVTT(
             "\n",
 
     val suiseiNoParade: String = "WEBVTT\n" +
-            "\n" +
-            "# This WEBVTT was converted from LRC and might contain errors\n" +
             "\n" +
             "00:00:01.570 --> 00:00:06.890\n" +
             "通り雨輝く路面\n" +
