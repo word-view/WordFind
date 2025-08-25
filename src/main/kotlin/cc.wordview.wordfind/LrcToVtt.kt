@@ -5,7 +5,7 @@ package cc.wordview.wordfind
  */
 class LrcToVtt {
     fun convert(lrcString: String): String {
-        val buffer = StringBuffer()
+        val buffer = StringBuilder()
 
         val lines = lrcString.split("\n")
 
