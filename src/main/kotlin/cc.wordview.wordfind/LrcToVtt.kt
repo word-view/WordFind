@@ -15,12 +15,13 @@ class LrcToVtt {
         for (line in lines) {
             if (line.isEmpty()) continue
 
-            val time = line.split(Regex("[\\[\\]]"))[1]
-            val cueSplit = line.replaceFirst("]", "%DELIMETER%").split("%DELIMETER%")
+            val startBracket = line.indexOf('[')
+            val endBracket = line.indexOf(']')
 
-            if (cueSplit.size < 2) continue
+            if (startBracket == -1 || endBracket == -1 || endBracket <= startBracket) continue
 
-            val cue = cueSplit[1].trim()
+            val time = line.substring(startBracket + 1, endBracket)
+            val cue = line.substring(endBracket + 1).trim()
 
             timings.add(time)
             cues.add(cue)
