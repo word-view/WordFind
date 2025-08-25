@@ -8,6 +8,7 @@ private data class LyricEntry(val time: String, val cue: String)
 class LrcToVtt {
     fun convert(lrcString: String): String {
         val buffer = StringBuilder()
+        buffer.append("WEBVTT\n\n")
 
         val lines = lrcString.split("\n")
 
@@ -22,10 +23,6 @@ class LrcToVtt {
             val cue = line.substring(endBracket + 1).trim()
             entries.add(LyricEntry(time, cue))
         }
-
-        // Start mounting the VTT
-        buffer.append("WEBVTT\n\n")
-        buffer.append("# This WEBVTT was converted from LRC and might contain errors\n\n")
 
         for (i in 0 until entries.size - 1) {
             val currentEntry = entries[i]
