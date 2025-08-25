@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "cc.wordview.wordfind"
-version = "2.5.3"
+version = "2.5.4"
 
 repositories {
     mavenCentral()
